@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import google.generativeai as genai
 from google.cloud import firestore
 import os
+import json 
 # ✅ Load Firebase credentials from environment variable
 service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
 credentials = service_account.Credentials.from_service_account_info(service_account_info)

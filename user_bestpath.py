@@ -1,6 +1,7 @@
 import os
 import time
 import math
+import json 
 from datetime import datetime
 from google.cloud import videointelligence, firestore
 
