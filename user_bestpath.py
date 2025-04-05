@@ -2,6 +2,7 @@ import os
 import time
 import math
 import json 
+from google.oauth2 import service_account
 from datetime import datetime
 from google.cloud import videointelligence, firestore
 

@@ -1,5 +1,7 @@
 import os
 import math
+import json 
+from google.oauth2 import service_account
 from flask import Flask, jsonify
 from google.cloud import videointelligence, firestore
 

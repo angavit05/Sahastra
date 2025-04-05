@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from google.oauth2 import service_account
 from datetime import datetime
 from google.cloud import videointelligence, firestore
 import google.generativeai as genai
