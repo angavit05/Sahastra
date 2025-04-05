@@ -4,15 +4,17 @@ import math
 from datetime import datetime
 from google.cloud import videointelligence, firestore
 
-
-# ✅ GOOGLE CLOUD AUTHENTICATION
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\hp\crowd_alert_api\key2.json"
+# ✅ Load Firebase credentials from environment variable
+service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 
 # ✅ GOOGLE CLOUD FIRESTORE SETUP
 PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
-db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+
+# ✅ Initialize Firestore using the credentials
+db = firestore.Client(credentials=credentials, project=PROJECT_ID, database=DATABASE_ID)
 
 
 # ✅ CONSTANTS

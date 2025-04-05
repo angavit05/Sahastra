@@ -5,6 +5,8 @@ from google.cloud import firestore
 from google.cloud.firestore_v1 import GeoPoint
 import google.generativeai as genai
 import os
+import json
+from google.oauth2 import service_account
 
 # ✅ Import internal modules
 from ai_analysis import run_ai_crowd_detection
@@ -15,16 +17,20 @@ from user_bestpath import run_user_exit_assignment
 app = Flask(__name__)
 CORS(app)
 
-# ✅ GOOGLE CLOUD AUTHENTICATION
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\hp\crowd_alert_api\key2.json"
+
+# ✅ Load Firebase credentials from environment variable
+service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 # ✅ Firestore Initialization
 PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
-db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+
+# ✅ Initialize Firestore using the credentials
+db = firestore.Client(credentials=credentials, project=PROJECT_ID, database=DATABASE_ID)
 
 # ✅ Gemini API Configuration
-genai.configure(api_key="AIzaSyDiXk-adAjaRlneqr_i4bO3i1CoRmeLRtY")
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 
 # ✅ GET Alerts

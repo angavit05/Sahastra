@@ -3,18 +3,19 @@ import time
 from datetime import datetime
 from google.cloud import videointelligence, firestore
 import google.generativeai as genai
-
-# ✅ GOOGLE CLOUD AUTHENTICATION
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\hp\crowd_alert_api\key2.json"
+# ✅ Load Firebase credentials from environment variable
+service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 # ✅ GOOGLE CLOUD SERVICES SETUP
 PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
-db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+
+# ✅ Initialize Firestore using the credentials
+db = firestore.Client(credentials=credentials, project=PROJECT_ID, database=DATABASE_ID)
 
 # ✅ GOOGLE CLOUD GEMINI API SETUP
-genai.configure(api_key="AIzaSyDiXk-adAjaRlneqr_i4bO3i1CoRmeLRtY")
-
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 # ✅ CONSTANTS
 THRESHOLD_COUNT = 18  # People count threshold
 THRESHOLD_DURATION = 1  # In seconds (testing mode)
