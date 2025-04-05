@@ -207,6 +207,21 @@ def get_sos_requests():
         print(f"🔥 Error: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "🚀 Welcome to the Sahastra API!",
+        "available_routes": [
+            "/alerts",
+            "/run_crowd_navigation",
+            "/gemini_query?query=your_question",
+            "/run_ai_crowd_analysis",
+            "/send_alert",
+            "/send_sos",
+            "/admin/sos_requests"
+        ]
+    }), 200
+
 
 # ✅ Run Server
 if __name__ == "__main__":
