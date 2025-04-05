@@ -14,8 +14,7 @@ PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
 
 # ✅ Initialize Firestore using the credentials
-db = firestore.Client(credentials=credentials, project=PROJECT_ID, database=DATABASE_ID)
-
+db = firestore.Client(credentials=credentials, project=PROJECT_ID)
 # ✅ FLASK SETUP
 app = Flask(__name__)
 
@@ -61,7 +60,6 @@ def find_best_exit(person_coords, exits):
 
     return best_exit
 
-# ✅ Main Video Analysis
 def analyze_crowd_density():
     client = videointelligence.VideoIntelligenceServiceClient()
     features = [videointelligence.Feature.OBJECT_TRACKING]
@@ -102,6 +100,7 @@ def analyze_crowd_density():
 
     print("✅ Crowd density analysis with exit assignment completed!")
     return output_data
+
 
 # ✅ Flask Route
 @app.route("/run_crowd_navigation", methods=["GET"])

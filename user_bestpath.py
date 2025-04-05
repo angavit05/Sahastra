@@ -16,8 +16,7 @@ PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
 
 # ✅ Initialize Firestore using the credentials
-db = firestore.Client(credentials=credentials, project=PROJECT_ID, database=DATABASE_ID)
-
+db = firestore.Client(credentials=credentials, project=PROJECT_ID)
 
 # ✅ CONSTANTS
 FPS = 1  # Reduced Frames per second to process fewer frames
@@ -104,51 +103,25 @@ def store_person_exit(frame_number, person_id, best_exit):
 
 
 def analyze_crowd_density():
-   """Analyzes the video for crowd density and assigns exits to people."""
-   client = videointelligence.VideoIntelligenceServiceClient()
-   features = [videointelligence.Feature.OBJECT_TRACKING]
-   request = videointelligence.AnnotateVideoRequest(input_uri=VIDEO_FILE, features=features)
+    print("🎥 [MOCK] Simulating video analysis...")
 
+    # Simulate fetching exits
+    exits = fetch_exits()
 
-   print("🔄 Processing video... (this may take a while)")
-   operation = client.annotate_video(request=request)
-   result = operation.result(timeout=600)
-   annotations = result.annotation_results[0].object_annotations
+    # Fake 3 people detected
+    dummy_people = [
+        {"id": 1, "frame": 10, "coords": {"x": 0.2, "y": 0.3}},
+        {"id": 2, "frame": 15, "coords": {"x": 0.5, "y": 0.5}},
+        {"id": 3, "frame": 20, "coords": {"x": 0.8, "y": 0.2}},
+    ]
 
+    for person in dummy_people:
+        print(f"🎥 [MOCK] Processing Person {person['id']} at Frame {person['frame']}")
+        best_exit = find_best_exit(person["coords"], exits)
+        store_person_exit(person["frame"], person["id"], best_exit)
 
-   exits = fetch_exits()
-   frame_counts = {}
+    print("✅ [MOCK] Crowd density analysis completed (demo version).")
 
-
-   for annotation in annotations:
-       if annotation.entity.description.lower() == "person":
-           person_id = annotation.track_id
-
-
-           for frame in annotation.frames:
-               time_offset = frame.time_offset
-               seconds = time_offset.seconds + (time_offset.microseconds / 1e6)
-               frame_number = int(seconds * FPS)
-
-
-               box = frame.normalized_bounding_box
-               x, y = (box.left + box.right) / 2, (box.top + box.bottom) / 2
-
-
-               if frame_number not in frame_counts:
-                   frame_counts[frame_number] = 0
-               frame_counts[frame_number] += 1
-
-
-               print(f"🎥 Processing Frame {frame_number}: Person {person_id} at ({x:.2f}, {y:.2f})")
-
-
-               person_coords = {"x": x, "y": y}
-               best_exit = find_best_exit(person_coords, exits)
-               store_person_exit(frame_number, person_id, best_exit)
-
-
-   print("✅ Crowd density analysis with exit assignment completed!")
 
 def run_user_exit_assignment():
     analyze_crowd_density()

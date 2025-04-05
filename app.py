@@ -56,16 +56,27 @@ def get_alerts():
         print(f"🔥 Error fetching alerts: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route("/run_crowd_navigation", methods=["GET"])
-def run_crowd_navigation():
-    try:
-        results = analyze_crowd_density()
-        return jsonify({
-            "message": "Crowd navigation completed successfully.",
-            "results": results
-                    }), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def analyze_crowd_density():
+    print("🔄 Mock analyze_crowd_density() called")
+    return [
+        {
+            "frame": 1,
+            "person_id": "demo_001",
+            "x": 0.45,
+            "y": 0.62,
+            "exit_id": "exit_A",
+            "exit_description": "East Exit"
+        },
+        {
+            "frame": 2,
+            "person_id": "demo_002",
+            "x": 0.52,
+            "y": 0.74,
+            "exit_id": "exit_B",
+            "exit_description": "West Exit"
+        }
+    ]
+
 
 
 # ✅ Internal Utility — Fetch alert data for Gemini

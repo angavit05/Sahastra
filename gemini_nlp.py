@@ -28,16 +28,9 @@ def get_crowd_data():
     print(f"📊 Retrieved {len(crowd_data)} records from Firestore.")
     return crowd_data
 
-# ✅ Gemini query function
 def ask_gemini(query, crowd_data):
-    model = genai.GenerativeModel("gemini-1.5-pro-latest")
-    context = f"""
-    You are an AI assistant analyzing crowd movement data.
-    Here is the latest crowd data:\n{crowd_data}\n
-    Answer the admin query based on this data:
-    """
-    response = model.generate_content(context + query)
-    return response.text
+    print("🔮 Mock Gemini response triggered.")
+    return f"🤖 This is a mock AI response to your query: '{query}' based on {len(crowd_data)} crowd records."
 
 # ✅ API Route
 @app.route("/gemini_query", methods=["GET"])
