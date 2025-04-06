@@ -82,15 +82,31 @@ def fetch_alert_data():
         print(f"🔥 Error fetching alert data: {e}")
         return []
 
-
 @app.route('/gemini_query', methods=['GET'])
 def gemini_query():
-    # Here we don't care about the query value for now
+    query = request.args.get('query', '').lower()
+
+    # Keyword-based mock responses
+    if "crowd" in query:
+        ai_response = "The current crowd density is moderate. Please monitor regularly."
+    elif "alert" in query:
+        ai_response = "No new alerts. The situation is stable."
+    elif "people count" in query or "how many people" in query:
+        ai_response = "There are approximately 250 people in the monitored area."
+    elif "frame" in query:
+        ai_response = "Recent frames show increasing movement near Exit A."
+    elif "exit" in query or "route" in query:
+        ai_response = "Exit B is currently the safest evacuation route."
+    elif "safe" in query:
+        ai_response = "All monitored areas are currently within safe thresholds."
+    else:
+        ai_response = "Sorry, I couldn't understand your query. Please try asking about crowd, alerts, or exits."
+
     mock_response = {
-        "query": "query",
-        "ai_response": " The evacuation route is clear."
+        "query": query,
+        "ai_response": ai_response
     }
-    return jsonify(mock_response), 200  # Return the mock response
+    return jsonify(mock_response), 200
 
 
 
