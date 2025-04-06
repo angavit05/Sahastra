@@ -10,7 +10,7 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 
 # ✅ Configure Gemini & Firestore
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+# genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
 
@@ -28,23 +28,6 @@ def get_crowd_data():
     print(f"📊 Retrieved {len(crowd_data)} records from Firestore.")
     return crowd_data
 
-def ask_gemini(query, crowd_data):
-    print("🔮 Mock Gemini response triggered.")
-    return f"🤖 This is a mock AI response to your query: '{query}' based on {len(crowd_data)} crowd records."
-
-# ✅ API Route
-@app.route("/gemini_query", methods=["GET"])
-def gemini_query():
-    user_query = request.args.get("query")
-    if not user_query:
-        return jsonify({"error": "Missing 'query' parameter"}), 400
-
-    crowd_data = get_crowd_data()
-    if not crowd_data:
-        return jsonify({"query": user_query, "ai_response": "⚠️ No crowd data found in Firestore."})
-
-    ai_response = ask_gemini(user_query, crowd_data)
-    return jsonify({"query": user_query, "ai_response": ai_response})
 
 # ✅ Start Flask Server
 if __name__ == "__main__":
