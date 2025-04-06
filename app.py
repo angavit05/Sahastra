@@ -19,8 +19,8 @@ CORS(app)
 
 
 # ✅ Load Firebase credentials from environment variable
-service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+#service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+#credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 # ✅ Firestore Initialization
 PROJECT_ID = "cedar-spring-455002-r4"
@@ -56,26 +56,17 @@ def get_alerts():
         print(f"🔥 Error fetching alerts: {e}")
         return jsonify({'error': str(e)}), 500
 
-def analyze_crowd_density():
-    print("🔄 Mock analyze_crowd_density() called")
-    return [
-        {
-            "frame": 1,
-            "person_id": "demo_001",
-            "x": 0.45,
-            "y": 0.62,
-            "exit_id": "exit_A",
-            "exit_description": "East Exit"
-        },
-        {
-            "frame": 2,
-            "person_id": "demo_002",
-            "x": 0.52,
-            "y": 0.74,
-            "exit_id": "exit_B",
-            "exit_description": "West Exit"
-        }
-    ]
+@app.route("/run_crowd_navigation", methods=["GET"])
+def run_crowd_navigation():
+    try:
+        results = analyze_crowd_density()
+        return jsonify({
+            "message": "Crowd navigation completed successfully.",
+            "results": results
+                    }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 
@@ -99,22 +90,16 @@ def gemini_query():
     if not query:
         return jsonify({"error": "Missing query parameter"}), 400
 
+    # Fetch crowd data
     crowd_data = fetch_alert_data()
     if not crowd_data:
         return jsonify({"ai_response": "The provided data is an empty list, meaning there are no crowd observations."})
 
-    model = genai.GenerativeModel("gemini-1.5-pro-latest")
-    context = f"""
-    You are an AI assistant analyzing crowd movement data.
-    Here is the latest crowd data:\n{crowd_data}\n
-    Answer the admin query based on this data:
-    """
-    response = model.generate_content(context + query)
-
-    return jsonify({
+    # Mock response simulating what Gemini might return
+    mock_response = {
         "query": query,
-        "ai_response": response.text
-    })
+        "ai_response": "Based on the crowd data, I suggest sending notifications to the closest exit for faster evacuation."
+    }
 
 
 # ✅ AI Crowd Detection Trigger

@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from flask import Flask, jsonify
 from google.cloud import videointelligence, firestore
 
-# ✅ Load Firebase credentials from environment variable
+#  ✅ Load Firebase credentials from environment variable
 service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
@@ -13,9 +13,9 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 PROJECT_ID = "cedar-spring-455002-r4"
 DATABASE_ID = "crowddensity"
 
-# ✅ Initialize Firestore using the credentials
+ #✅ Initialize Firestore using the credentials
 db = firestore.Client(credentials=credentials, project=PROJECT_ID)
-# ✅ FLASK SETUP
+#✅ FLASK SETUP
 app = Flask(__name__)
 
 # ✅ CONSTANTS
@@ -61,58 +61,67 @@ def find_best_exit(person_coords, exits):
     return best_exit
 
 def analyze_crowd_density():
-    client = videointelligence.VideoIntelligenceServiceClient()
-    features = [videointelligence.Feature.OBJECT_TRACKING]
-    request = videointelligence.AnnotateVideoRequest(input_uri=VIDEO_FILE, features=features)
+    print(" analyze_crowd_density called (no GCP, no DB)")
+    
+    # Simulated exits (replace with your real ones later)
+    exits = {
+        "exit_1": {
+            "coordinates": {"x": 0.1, "y": 0.2},
+            "congestion_level": 2,
+            "priority": 1,
+            "description": "Main Gate"
+        },
+        "exit_2": {
+            "coordinates": {"x": 0.8, "y": 0.9},
+            "congestion_level": 1,
+            "priority": 2,
+            "description": "Emergency Exit"
+        }
+    }
 
-    print("🔄 Processing video...")
-    operation = client.annotate_video(request=request)
-    result = operation.result(timeout=600)
-    annotations = result.annotation_results[0].object_annotations
-
-    exits = fetch_exits()
-    output_data = []
-
-    for annotation in annotations:
-        if annotation.entity.description.lower() == "person":
-            person_id = annotation.track_id
-            for frame in annotation.frames:
-                time_offset = frame.time_offset
-                seconds = time_offset.seconds + (time_offset.microseconds / 1e6)
-                frame_number = int(seconds * FPS)
-
-                box = frame.normalized_bounding_box
-                x, y = (box.left + box.right) / 2, (box.top + box.bottom) / 2
-                person_coords = {"x": x, "y": y}
-                best_exit = find_best_exit(person_coords, exits)
-
-                exit_data = exits[best_exit]
-                description = exit_data.get("description", "No Description")
-
-                output_data.append({
-                    "frame": frame_number,
-                    "person_id": person_id,
-                    "x": round(x, 2),
-                    "y": round(y, 2),
-                    "exit_id": best_exit,
-                    "exit_description": description
-                })
-
-    print("✅ Crowd density analysis with exit assignment completed!")
+    # Simulated person data
+    output_data = [
+        {
+            "frame": 1,
+            "person_id": 1001,
+            "x": 0.15,
+            "y": 0.22,
+            "exit_id": "exit_1",
+            "exit_description": exits["exit_1"]["description"]
+        },
+        {
+            "frame": 1,
+            "person_id": 1002,
+            "x": 0.85,
+            "y": 0.88,
+            "exit_id": "exit_2",
+            "exit_description": exits["exit_2"]["description"]
+        },
+        {
+            "frame": 2,
+            "person_id": 1003,
+            "x": 0.5,
+            "y": 0.5,
+            "exit_id": "exit_2",
+            "exit_description": exits["exit_2"]["description"]
+        }
+    ]
+    
+    print("Crowd density analysis completed!")
     return output_data
 
 
-# ✅ Flask Route
-@app.route("/run_crowd_navigation", methods=["GET"])
-def run_crowd_navigation():
-    try:
-        results = analyze_crowd_density()
-        return jsonify({
-            "message": "Crowd navigation completed successfully.",
-            "results": results
-        }), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# # ✅ Flask Route
+# @app.route("/run_crowd_navigation", methods=["GET"])
+# def run_crowd_navigation():
+#     try:
+#         results = analyze_crowd_density()
+#         return jsonify({
+#             "message": "Crowd navigation completed successfully.",
+#             "results": results
+#         }), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 # ✅ Run Flask app
 if __name__ == "__main__":
