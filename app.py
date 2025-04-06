@@ -82,19 +82,15 @@ def fetch_alert_data():
         print(f"🔥 Error fetching alert data: {e}")
         return []
 
+
 @app.route('/gemini_query', methods=['GET'])
 def gemini_query():
-    query = request.args.get('query')
-    if not query:
-        return jsonify({"error": "Missing query parameter"}), 400
-
-    # Mock response simulating what Gemini might return
+    # Here we don't care about the query value for now
     mock_response = {
-        "query": query,
-        "ai_response": "Based on the crowd data, I suggest sending notifications to the closest exit for faster evacuation."
+        "query": "query",
+        "ai_response": " The evacuation route is clear."
     }
-
-    return jsonify(mock_response), 200  # Return the mock response as a JSON object
+    return jsonify(mock_response), 200  # Return the mock response
 
 
 
