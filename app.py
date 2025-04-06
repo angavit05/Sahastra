@@ -83,7 +83,6 @@ def fetch_alert_data():
         return []
 
 
-# ✅ Gemini NLP Route
 @app.route('/gemini_query', methods=['GET'])
 def gemini_query():
     query = request.args.get('query')
@@ -100,6 +99,9 @@ def gemini_query():
         "query": query,
         "ai_response": "Based on the crowd data, I suggest sending notifications to the closest exit for faster evacuation."
     }
+
+    return jsonify(mock_response), 200  # Return the mock response as a JSON object
+
 
 
 # ✅ AI Crowd Detection Trigger
