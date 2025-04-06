@@ -19,8 +19,8 @@ CORS(app)
 
 
 # ✅ Load Firebase credentials from environment variable
-#service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
-#credentials = service_account.Credentials.from_service_account_info(service_account_info)
+service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 # ✅ Firestore Initialization
 PROJECT_ID = "cedar-spring-455002-r4"
